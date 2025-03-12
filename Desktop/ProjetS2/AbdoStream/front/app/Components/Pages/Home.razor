@@ -1,0 +1,274 @@
+@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>AbdoStream - Votre plateforme de films</PageTitle>
+<link href="css/Home.css" rel="stylesheet" />
+
+<header class="header">
+    <div class="logo">
+        <a href="/" class="logo-link">
+            <span class="logo-icon">🎥</span>
+            <h1 class="logo-text">AbdoStream</h1>
+        </a>
+    </div>
+    <nav class="navigation">
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+        <label for="nav-toggle" class="nav-toggle-label">
+            <span></span>
+        </label>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link active">Accueil</a></li>
+            <li><a href="/films" class="nav-link">Films</a></li>
+            @if(isUserAuthenticated && isAdmin)
+            {
+                <li><a href="/omdb" class="nav-link">OMDB</a></li>
+            }
+            <li><a href="/favorites" class="nav-link">Favoris</a></li>
+            <li><a href="/Allusers" class="nav-link">Utilisateurs</a></li>
+            <li><a href="/suggestions" class="nav-link">Suggestions</a></li>
+            @if (!isUserAuthenticated)
+            {
+                <li><a href="/Login" class="btn-primary">Connexion</a></li>
+            }
+            else
+            {
+                <li><a href="/logout" class="btn-secondary">Déconnexion</a></li>
+            }
+        </ul>
+    </nav>
+</header>
+
+<main>
+    @if (!isUserAuthenticated)
+    {
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">Explorez et gérez vos films préférés</h2>
+                <p class="hero-subtitle">Découvrez de nouveaux films, créez votre collection personnalisée, et organisez vos favoris en un clic.</p>
+                <div class="cta-buttons">
+                    <a href="/Signup" class="btn btn-primary">Créer un compte</a>
+                    <a href="/Login" class="btn btn-outline">Se connecter</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="images/hero-image.png" alt="Bibliothèque virtuelle de films" class="hero-img" />
+            </div>
+        </section>
+    }
+    else
+    {
+        <AuthorizeView>
+            <Authorized>
+                <section class="welcome-section">
+                    <div class="welcome-content">
+                        <div class="welcome-container">
+                            <div class="avatar-container">
+                                <img src="images/animated-avatar.gif" alt="Avatar animé" class="avatar-img" />
+                            </div>
+                            <div class="welcome-message">
+                                <h2>Bienvenue, <span class="username">@context.User.Identity?.Name !</span></h2>
+                                <p>Que souhaitez-vous explorer aujourd'hui ?</p>
+                                <div class="quick-actions">
+                                    <a href="/films" class="action-btn">
+                                        <span class="action-icon">🎬</span>
+                                        Explorer les films
+                                    </a>
+                                    <a href="/favorites" class="action-btn">
+                                        <span class="action-icon">⭐</span>
+                                        Mes favoris
+                                    </a>
+                                    <a href="/suggestions" class="action-btn">
+                                        <span class="action-icon">💡</span>
+                                        Suggestions
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <img src="images/hero-image2.png" alt="Bibliothèque virtuelle de films" class="hero-img" />
+                    </div>
+                </section>
+            </Authorized>
+        </AuthorizeView>
+    }
+
+    <section class="features">
+        <h3 class="section-title">Pourquoi choisir AbdoStream ?</h3>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <div class="feature-icon">📋</div>
+                <h4 class="feature-title">Organisez facilement vos films</h4>
+                <p class="feature-description">Catégorisez et triez vos films préférés en un seul endroit.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⭐</div>
+                <h4 class="feature-title">Créez des listes personnalisées</h4>
+                <p class="feature-description">Gardez vos films favoris toujours à portée de main.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <h4 class="feature-title">Suivez vos visionnages</h4>
+                <p class="feature-description">Ne perdez jamais le fil de vos films regardés.</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💻</div>
+                <h4 class="feature-title">Interface moderne et intuitive</h4>
+                <p class="feature-description">Une expérience utilisateur pensée pour vous.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="latest-films">
+        <h3 class="section-title">Films récemment ajoutés</h3>
+        <div class="film-carousel">
+            @* Cette section sera remplie dynamiquement avec les films récents *@
+            <div class="film-placeholder">
+                <div class="film-card">
+                    <div class="film-poster"></div>
+                    <div class="film-info">
+                        <h4>Titre du film</h4>
+                        <p>2025 | Action</p>
+                    </div>
+                </div>
+            </div>
+            <div class="film-placeholder">
+                <div class="film-card">
+                    <div class="film-poster"></div>
+                    <div class="film-info">
+                        <h4>Titre du film</h4>
+                        <p>2025 | Aventure</p>
+                    </div>
+                </div>
+            </div>
+            <div class="film-placeholder">
+                <div class="film-card">
+                    <div class="film-poster"></div>
+                    <div class="film-info">
+                        <h4>Titre du film</h4>
+                        <p>2025 | Comédie</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="see-more">
+            <a href="/films" class="btn btn-outline">Voir tous les films</a>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <h3 class="section-title">Ce que disent nos utilisateurs</h3>
+        <div class="testimonial-container">
+            <div class="testimonial-item">
+                <div class="testimonial-avatar">👩</div>
+                <div class="testimonial-content">
+                    <p>"AbdoStream m'a permis de découvrir et d'organiser mes films préférés. Une plateforme incroyable !"</p>
+                    <div class="testimonial-author">Sarah, passionnée de cinéma</div>
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-avatar">👨</div>
+                <div class="testimonial-content">
+                    <p>"Une interface intuitive et un design élégant. Je recommande vivement !"</p>
+                    <div class="testimonial-author">Paul, utilisateur satisfait</div>
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+            </div>
+            <div class="testimonial-item">
+                <div class="testimonial-avatar">👩</div>
+                <div class="testimonial-content">
+                    <p>"AbdoStream a transformé ma façon de découvrir des films. C'est devenu mon outil indispensable !"</p>
+                    <div class="testimonial-author">Marie, cinéphile</div>
+                    <div class="testimonial-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="cta-content">
+            <h3>Prêt à découvrir une nouvelle façon d'explorer le cinéma ?</h3>
+            <p>Rejoignez des milliers d'utilisateurs et commencez dès aujourd'hui.</p>
+            @if (!isUserAuthenticated)
+            {
+                <a href="/Signup" class="btn btn-large">Commencer gratuitement</a>
+            }
+            else
+            {
+                <a href="/films" class="btn btn-large">Explorer les films</a>
+            }
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <span class="logo-icon">🎥</span>
+                <h3 class="footer-logo-text">AbdoStream</h3>
+            </div>
+            <p class="footer-description">Votre plateforme de gestion et découverte de films préférés.</p>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Liens rapides</h3>
+            <ul class="footer-links">
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/films">Films</a></li>
+                <li><a href="/favorites">Favoris</a></li>
+                <li><a href="/suggestions">Suggestions</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Informations légales</h3>
+            <ul class="footer-links">
+                <li><a href="/politique-de-confidentialite">Politique de confidentialité</a></li>
+                <li><a href="/conditions-generales">Conditions générales</a></li>
+                <li><a href="/support">Support</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3 class="footer-title">Suivez-nous</h3>
+            <div class="footer-social">
+                <a href="#" class="social-link">
+                    <span class="social-icon">📱</span>
+                    <span class="social-name">Facebook</span>
+                </a>
+                <a href="#" class="social-link">
+                    <span class="social-icon">📱</span>
+                    <span class="social-name">Twitter</span>
+                </a>
+                <a href="#" class="social-link">
+                    <span class="social-icon">📱</span>
+                    <span class="social-name">Instagram</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>© 2025 AbdoStream. Tous droits réservés.</p>
+    </div>
+</footer>
+
+@code {
+    private bool isUserAuthenticated;
+    private bool isAdmin;   
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        isUserAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        isAdmin = await IsUserInRoleAsync("Admin");
+    }
+
+    private async Task<bool> IsUserInRoleAsync(string role)
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        return user.IsInRole(role);
+    }
+}
